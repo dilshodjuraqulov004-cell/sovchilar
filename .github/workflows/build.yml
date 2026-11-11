@@ -1,3 +1,4 @@
+
 name: Build Sovchilar APK
 
 on:
@@ -6,15 +7,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
       - name: Download project
         uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
+          for i in 1 2 3; do
+            sudo apt-get update && break
+            sleep 15
+          done
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip || sudo apt-get install -y git zip unzip default-jdk python3-pip
+
+      - name: Install Buildozer
+        run: |
+          python3 -m pip install --user --upgrade buildozer "Cython==0.29.36"
 
       - name: Build APK
         run: |
@@ -26,3 +34,4 @@ jobs:
         with:
           name: sovchilar-apk
           path: bin/*.apk
+          
