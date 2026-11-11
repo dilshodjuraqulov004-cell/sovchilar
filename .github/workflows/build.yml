@@ -28,12 +28,14 @@ jobs:
         run: |
           python3 -m venv .venv
           . .venv/bin/activate
-          pip install --upgrade pip setuptools wheel
-          pip install buildozer "Cython==0.29.36"
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install "Cython==0.29.36" buildozer
+          python -m pip show Cython
+          .venv/bin/cython --version
 
       - name: Build APK
         run: |
-          yes | .venv/bin/buildozer -v android debug
+          .venv/bin/buildozer -v android debug
 
       - name: Save APK
         uses: actions/upload-artifact@v4
