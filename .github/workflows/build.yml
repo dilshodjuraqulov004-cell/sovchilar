@@ -1,0 +1,28 @@
+name: Build Sovchilar APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip
+          python3 -m pip install --user --upgrade buildozer "Cython==0.29.36"
+
+      - name: Build APK
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          buildozer android debug
+
+      - name: Save APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sovchilar-apk
+          path: bin/*.apk
