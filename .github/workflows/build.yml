@@ -15,7 +15,14 @@ jobs:
       - name: Install system packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip python3-venv
+          sudo apt-get install -y \
+            git zip unzip \
+            openjdk-17-jdk \
+            python3-pip python3-venv \
+            python3-setuptools \
+            build-essential \
+            libffi-dev libssl-dev \
+            zlib1g-dev
 
       - name: Install Buildozer
         run: |
@@ -24,16 +31,9 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install buildozer "Cython==0.29.36"
 
-      - name: Accept Android SDK licenses
-        run: |
-          mkdir -p "$HOME/.buildozer/android/platform"
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
-
       - name: Build APK
         run: |
-          . .venv/bin/activate
-          export PATH="$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH"
-          buildozer android debug
+          yes | .venv/bin/buildozer -v android debug
 
       - name: Save APK
         uses: actions/upload-artifact@v4
@@ -41,4 +41,5 @@ jobs:
           name: sovchilar-apk
           path: bin/*.apk
           if-no-files-found: error
+          
           
